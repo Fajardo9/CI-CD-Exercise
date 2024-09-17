@@ -11,14 +11,15 @@ on:
       - 'main'
   workflow_dispatch:
     inputs:
-          browserName:
-            description: 'Browser Type'
-            required: false
-            type: string
-            default: 'CHROME'
+      browserName:
+        description: 'Browser Type'
+        required: false
+        type: string
+        default: 'CHROME'
 jobs:
   start-test:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4.1.7
       - name: Set up JDK 17
@@ -26,12 +27,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
       - name: Build with Maven
         run: mvn -clean
       - name: Run tests
         run: mvn -DbrowserName=${{ inputs.browsername || 'CHROME' }} verify
+
       - name: Get Allure history
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         if: always()
         continue-on-error: true
         with:
@@ -53,5 +56,5 @@ jobs:
         with:
           target_branch: gh-pages
           build_dir: allure-history
-          env:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
